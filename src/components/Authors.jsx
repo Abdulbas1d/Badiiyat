@@ -58,7 +58,7 @@ function Authors() {
           <SheetContent className="w-full max-w-2xl overflow-y-auto">
             <form>
               <SheetHeader className="mb-6">
-                <SheetTitle className="text-2xl">Ulugbek hazinasi</SheetTitle>
+                <SheetTitle className="text-2xl">Add Author</SheetTitle>
                 <SheetDescription>
                   Muallif qo'shish uchun ma'lumotlarni to'ldiring
                 </SheetDescription>
@@ -135,7 +135,7 @@ function Authors() {
                     id="bio"
                     name="bio"
                     placeholder="Muallif haqida ma'lumot..."
-                    className="col-span-3 min-h-[120px]"
+                    className="col-span-3 min-h-[80px]"
                   />
                 </div>
               </div>

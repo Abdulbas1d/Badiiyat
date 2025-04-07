@@ -58,16 +58,16 @@ function BooksList() {
           <SheetContent className="w-full max-w-2xl overflow-y-auto">
             <form>
               <SheetHeader className="mb-6">
-                <SheetTitle className="text-2xl">Ulugbek hazinasi</SheetTitle>
+                <SheetTitle className="text-2xl">Add Book</SheetTitle>
                 <SheetDescription>
-                  Muallif qo'shish uchun ma'lumotlarni to'ldiring
+                  Kitob qo'shish uchun ma'lumotlarni to'ldiring
                 </SheetDescription>
               </SheetHeader>
 
               <div className="grid gap-6 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="image" className="text-right">
-                    Upload image
+                    Upload cover
                   </Label>
                   <Input
                     id="image"
@@ -80,7 +80,7 @@ function BooksList() {
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="firstName" className="text-right">
-                    First name
+                    Title
                   </Label>
                   <Input
                     id="firstName"
@@ -91,14 +91,14 @@ function BooksList() {
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="lastName" className="text-right">
-                    Last name
+                    Pages
                   </Label>
                   <Input id="lastName" name="lastName" className="col-span-3" />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="birthDate" className="text-right">
-                    Date of birth
+                    Year
                   </Label>
                   <Input
                     id="birthDate"
@@ -110,12 +110,12 @@ function BooksList() {
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="deathDate" className="text-right">
-                    Date of death
+                    Price
                   </Label>
                   <Input
                     id="deathDate"
                     name="deathDate"
-                    type="date"
+                    type="number"
                     className="col-span-3"
                   />
                 </div>
@@ -128,14 +128,21 @@ function BooksList() {
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="country" className="text-right">
+                    Author
+                  </Label>
+                  <Input id="country" name="country" className="col-span-3" />
+                </div>
+
+                <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="bio" className="text-right">
-                    Bio
+                    Description
                   </Label>
                   <Textarea
                     id="bio"
                     name="bio"
-                    placeholder="Muallif haqida ma'lumot..."
-                    className="col-span-3 min-h-[120px]"
+                    placeholder="Kitob haqida ma'lumot..."
+                    className="col-span-3 min-h-[80px]"
                   />
                 </div>
               </div>
