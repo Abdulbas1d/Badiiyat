@@ -93,8 +93,8 @@ function BooksList() {
     return true
   }
 
-  function handleCreate(e) {
-    e.preventDefault()
+  function handleCreate(event) {
+    event.preventDefault()
 
     let isValid = validate()
     if (!isValid) {
@@ -113,6 +113,17 @@ function BooksList() {
     }
 
     console.log(newBook);
+
+    setFormData({
+      image: null,
+      title: "",
+      pages: "",
+      year: "",
+      price: "",
+      country: "",
+      author: "",
+      description: ""
+    })
   }
 
   useEffect(() => {

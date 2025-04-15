@@ -15,10 +15,88 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 
 function Authors() {
   const [Authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    image: null,
+    fullName: "",
+    dateOfBirth: "",
+    dateOfDeath: "",
+    country: "",
+    bio: ""
+  })
+
+  function handleChange(e) {
+    const { name, value, type, files } = e.target
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value
+    }))
+  }
+
+  function validate() {
+    if (!formData.image) {
+      toast.error("Rasm tanlashingiz kerak!")
+      return false
+    }
+
+    if (!formData.fullName) {
+      toast.error("Shoir ismini kiritishingiz kerak!")
+      return false
+    } else if (formData.fullName.length < 3) {
+      toast.error("Shoirning ismini to'liq kiritishingiz kerak!")
+      return false
+    }
+
+    if (!formData.dateOfBirth) {
+      toast.error("Shoirni tug'ulgan sanasini kiritishingiz kerak!")
+      return false
+    }
+
+    if (!formData.country) {
+      toast.error("Shoirni yashash joyini kiritishingiz kerak!")
+      return false
+    }
+
+    if (!formData.bio) {
+      toast.error("Shoirni haqida ma'lumot kiritishingiz kerak!")
+      return false
+    }
+
+    return true
+  }
+
+  function handleCreateAuthor(event) {
+    event.preventDefault()
+
+    let isValid = validate()
+    if (!isValid) {
+      return
+    }
+
+    let newAuthor = {
+      full_name: formData.fullName,
+      dateOfBirth: formData.dateOfBirth,
+      dateOfDeath: formData.dateOfDeath,
+      country: formData.country,
+      bio: formData.bio
+    }
+
+    console.log(newAuthor);
+
+    setFormData({
+      image: null,
+      fullName: "",
+      dateOfBirth: "",
+      dateOfDeath: "",
+      country: "",
+      bio: ""
+    })
+  }
 
   useEffect(() => {
     fetch("https://library-project-6agw.onrender.com/get_authors")
@@ -45,6 +123,7 @@ function Authors() {
 
   return (
     <div className="p-5">
+      <Toaster />
       <div className="flex justify-end">
         <Sheet>
           <SheetTrigger asChild>
@@ -64,7 +143,7 @@ function Authors() {
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="grid gap-6 py-4">
+              <div className="grid gap-[30px] py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="image" className="text-right">
                     Upload image
@@ -75,48 +154,48 @@ function Authors() {
                     type="file"
                     accept="image/*"
                     className="col-span-3"
+                    onChange={handleChange}
                   />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="firstName" className="text-right">
-                    First name
+                  <Label htmlFor="fullName" className="text-right">
+                    Full Name
                   </Label>
                   <Input
-                    id="firstName"
-                    name="firstName"
+                    id="fullName"
+                    name="fullName"
                     className="col-span-3"
+                    value={formData.fullName}
+                    onChange={handleChange}
                   />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="lastName" className="text-right">
-                    Last name
-                  </Label>
-                  <Input id="lastName" name="lastName" className="col-span-3" />
-                </div>
-
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="birthDate" className="text-right">
+                  <Label htmlFor="dateOfBirth" className="text-right">
                     Date of birth
                   </Label>
                   <Input
-                    id="birthDate"
-                    name="birthDate"
+                    id="dateOfBirth"
+                    name="dateOfBirth"
                     type="date"
                     className="col-span-3"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
                   />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="deathDate" className="text-right">
+                  <Label htmlFor="dateOfDeath" className="text-right">
                     Date of death
                   </Label>
                   <Input
-                    id="deathDate"
-                    name="deathDate"
+                    id="dateOfDeath"
+                    name="dateOfDeath"
                     type="date"
                     className="col-span-3"
+                    value={formData.dateOfDeath}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -124,7 +203,13 @@ function Authors() {
                   <Label htmlFor="country" className="text-right">
                     Country
                   </Label>
-                  <Input id="country" name="country" className="col-span-3" />
+                  <Input
+                    id="country"
+                    name="country"
+                    className="col-span-3"
+                    value={formData.country}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -136,13 +221,15 @@ function Authors() {
                     name="bio"
                     placeholder="Muallif haqida ma'lumot..."
                     className="col-span-3 min-h-[80px]"
+                    value={formData.bio}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
 
               <SheetFooter>
                 <SheetClose asChild>
-                  <Button type="submit" className="w-full">
+                  <Button onClick={handleCreateAuthor} type="submit" className="w-full">
                     Create
                   </Button>
                 </SheetClose>
