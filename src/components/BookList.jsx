@@ -15,10 +15,105 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 
 function BooksList() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    image: null,
+    title: "",
+    pages: "",
+    year: "",
+    price: "",
+    country: "",
+    author: "",
+    description: ""
+  })
+
+  function handleChange(e) {
+    const { name, value, type, files } = e.target
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value
+    }))
+  }
+
+  function validate() {
+    if (!formData.image) {
+      toast.error("Rasm tanlang!")
+      return false
+    }
+
+    if (!formData.title) {
+      toast.error("Sarlavha (Title) kiritishingiz kerak!")
+      return false
+    } else if (formData.title.length < 3) {
+      toast.error("Sarlavha eng kamida 3ta harfdan iborat bo'lishi kerak!")
+      return false
+    }
+
+    if (!formData.pages) {
+      toast.error("Sahifalar sonini kiritishingiz kerak!")
+      return false
+    }
+
+    if (!formData.year) {
+      toast.error("Yilni tanlashingiz kerak!")
+      return false
+    }
+
+    if (!formData.price) {
+      toast.error("Narxni kiritishingiz kerak!")
+      return false
+    }
+
+    if (!formData.country) {
+      toast.error("Davlat nomini kiritishingiz kerak!")
+      return false
+    } else if (formData.country.length < 3) {
+      toast.error("Davlat nomi eng kamida 3ta harfdan iborat bo'lishi kerak!")
+      return false
+    }
+
+    if (!formData.author) {
+      toast.error("Muallif ismini kiritishingiz kerak!")
+      return false
+    } else if (formData.author.length < 3) {
+      toast.error("Muallif ismi eng kamida 3ta harfdan iborat bo'lishi kerak!")
+      return false
+    }
+
+    if (!formData.description) {
+      toast.error("Tavsif kiritishingiz kerak!")
+      return false
+    }
+
+    return true
+  }
+
+  function handleCreate(e) {
+    e.preventDefault()
+
+    let isValid = validate()
+    if (!isValid) {
+      return
+    }
+
+    let newBook = {
+      title: formData.title,
+      pages: formData.pages,
+      year: formData.year,
+      price: formData.price,
+      country: formData.country,
+      author: formData.author,
+      description: formData.description,
+      img: formData.image
+    }
+
+    console.log(newBook);
+  }
 
   useEffect(() => {
     fetch("https://library-project-6agw.onrender.com/get_books")
@@ -45,6 +140,7 @@ function BooksList() {
 
   return (
     <div className="p-5">
+      <Toaster />
       <div className="flex justify-end">
         <Sheet>
           <SheetTrigger asChild>
@@ -75,6 +171,7 @@ function BooksList() {
                     type="file"
                     accept="image/*"
                     className="col-span-3"
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -84,8 +181,10 @@ function BooksList() {
                   </Label>
                   <Input
                     id="firstName"
-                    name="firstName"
+                    name="title"
                     className="col-span-3"
+                    value={formData.title}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -93,7 +192,13 @@ function BooksList() {
                   <Label htmlFor="lastName" className="text-right">
                     Pages
                   </Label>
-                  <Input id="lastName" name="lastName" className="col-span-3" />
+                  <Input
+                    id="lastName"
+                    name="pages"
+                    className="col-span-3"
+                    value={formData.pages}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -102,9 +207,11 @@ function BooksList() {
                   </Label>
                   <Input
                     id="birthDate"
-                    name="birthDate"
+                    name="year"
                     type="date"
                     className="col-span-3"
+                    value={formData.year}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -114,9 +221,11 @@ function BooksList() {
                   </Label>
                   <Input
                     id="deathDate"
-                    name="deathDate"
+                    name="price"
                     type="number"
                     className="col-span-3"
+                    value={formData.price}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -124,14 +233,26 @@ function BooksList() {
                   <Label htmlFor="country" className="text-right">
                     Country
                   </Label>
-                  <Input id="country" name="country" className="col-span-3" />
+                  <Input
+                    id="country"
+                    name="country"
+                    className="col-span-3"
+                    value={formData.country}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="country" className="text-right">
                     Author
                   </Label>
-                  <Input id="country" name="country" className="col-span-3" />
+                  <Input
+                    id="country"
+                    name="author"
+                    className="col-span-3"
+                    value={formData.author}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -140,16 +261,18 @@ function BooksList() {
                   </Label>
                   <Textarea
                     id="bio"
-                    name="bio"
+                    name="description"
                     placeholder="Kitob haqida ma'lumot..."
                     className="col-span-3 min-h-[80px]"
+                    value={formData.description}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
 
               <SheetFooter>
                 <SheetClose asChild>
-                  <Button type="submit" className="w-full">
+                  <Button onClick={handleCreate} type="submit" className="w-full">
                     Create
                   </Button>
                 </SheetClose>
