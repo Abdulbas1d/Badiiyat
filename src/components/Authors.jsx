@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 function Authors() {
   const [Authors, setAuthors] = useState([]);
@@ -70,7 +71,7 @@ function Authors() {
     return true
   }
 
-  function handleCreateAuthor(event) {
+  async function handleCreateAuthor(event) {
     event.preventDefault()
 
     let isValid = validate()
@@ -78,24 +79,39 @@ function Authors() {
       return
     }
 
-    let newAuthor = {
-      full_name: formData.fullName,
-      dateOfBirth: formData.dateOfBirth,
-      dateOfDeath: formData.dateOfDeath,
-      country: formData.country,
-      bio: formData.bio
+    let newAuthor = new FormData()
+    newAuthor.append("img", formData.image)
+    newAuthor.append("full_name", formData.fullName)
+    newAuthor.append("dateOfBirth", formData.dateOfBirth)
+    newAuthor.append("dateOfDeath", formData.dateOfDeath)
+    newAuthor.append("country", formData.country)
+    newAuthor.append("bio", formData.bio)
+
+    try {
+      await axios.post(`https://library-project-6agw.onrender.com/add_author`, newAuthor, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+
+      toast.success("Muallif muvaffaqqiyatli qo'shildi!")
+
+      setFormData({
+        image: null,
+        fullName: "",
+        dateOfBirth: "",
+        dateOfDeath: "",
+        country: "",
+        bio: ""
+      })
+
+      fetch(`https://library-project-6agw.onrender.com/get_authors`)
+        .then((res) => res.json())
+        .then((data) => setAuthors(data))
+    } catch (error) {
+      toast.error("Muallif qo'shishda xatolik yuz berdi")
+      console.log(error);
     }
-
-    console.log(newAuthor);
-
-    setFormData({
-      image: null,
-      fullName: "",
-      dateOfBirth: "",
-      dateOfDeath: "",
-      country: "",
-      bio: ""
-    })
   }
 
   useEffect(() => {
@@ -135,7 +151,7 @@ function Authors() {
             </Button>
           </SheetTrigger>
           <SheetContent className="w-full max-w-2xl overflow-y-auto">
-            <form>
+            <form onSubmit={handleCreateAuthor}>
               <SheetHeader className="mb-6">
                 <SheetTitle className="text-2xl">Add Author</SheetTitle>
                 <SheetDescription>
@@ -229,7 +245,7 @@ function Authors() {
 
               <SheetFooter>
                 <SheetClose asChild>
-                  <Button onClick={handleCreateAuthor} type="submit" className="w-full">
+                  <Button type="submit" className="w-full">
                     Create
                   </Button>
                 </SheetClose>

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 function BooksList() {
   const [books, setBooks] = useState([]);
@@ -93,7 +94,7 @@ function BooksList() {
     return true
   }
 
-  function handleCreate(event) {
+  async function handleCreate(event) {
     event.preventDefault()
 
     let isValid = validate()
@@ -101,29 +102,43 @@ function BooksList() {
       return
     }
 
-    let newBook = {
-      title: formData.title,
-      pages: formData.pages,
-      year: formData.year,
-      price: formData.price,
-      country: formData.country,
-      author: formData.author,
-      description: formData.description,
-      img: formData.image
+    const newBook = new FormData();
+    newBook.append("img", formData.image);
+    newBook.append("title", formData.title);
+    newBook.append("pages", formData.pages);
+    newBook.append("year", formData.year);
+    newBook.append("price", formData.price);
+    newBook.append("country", formData.country);
+    newBook.append("author", formData.author);
+    newBook.append("description", formData.description);
+
+    try {
+      await axios.post(`https://library-project-6agw.onrender.com/add_book`, newBook, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+
+      toast.success("Kitob muvaffaqqiyatli qo'shildi!")
+
+      setFormData({
+        image: null,
+        title: "",
+        pages: "",
+        year: "",
+        price: "",
+        country: "",
+        author: "",
+        description: ""
+      })
+
+      fetch(`https://library-project-6agw.onrender.com/get_books`)
+        .then((res) => res.json())
+        .then((data) => setBooks(data))
+    } catch (error) {
+      toast.error("Kitobni qo'shishda xatolik yuz berdi!")
+      console.log(error);
     }
-
-    console.log(newBook);
-
-    setFormData({
-      image: null,
-      title: "",
-      pages: "",
-      year: "",
-      price: "",
-      country: "",
-      author: "",
-      description: ""
-    })
   }
 
   useEffect(() => {
@@ -163,7 +178,7 @@ function BooksList() {
             </Button>
           </SheetTrigger>
           <SheetContent className="w-full max-w-2xl overflow-y-auto">
-            <form>
+            <form onSubmit={handleCreate}>
               <SheetHeader className="mb-6">
                 <SheetTitle className="text-2xl">Add Book</SheetTitle>
                 <SheetDescription>
@@ -283,7 +298,7 @@ function BooksList() {
 
               <SheetFooter>
                 <SheetClose asChild>
-                  <Button onClick={handleCreate} type="submit" className="w-full">
+                  <Button type="submit" className="w-full">
                     Create
                   </Button>
                 </SheetClose>
