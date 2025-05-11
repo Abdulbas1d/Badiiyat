@@ -17,10 +17,12 @@ import {
 import { Plus } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Authors() {
   const [Authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     image: null,
     fullName: "",
@@ -88,7 +90,7 @@ function Authors() {
     newAuthor.append("bio", formData.bio)
 
     try {
-      await axios.post(`https://library-project-6agw.onrender.com/add_author`, newAuthor, {
+      await axios.post(`https://library-1dmu.onrender.com/add_author`, newAuthor, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -105,7 +107,7 @@ function Authors() {
         bio: ""
       })
 
-      fetch(`https://library-project-6agw.onrender.com/get_authors`)
+      fetch(`https://library-1dmu.onrender.com/get_authors`)
         .then((res) => res.json())
         .then((data) => setAuthors(data))
     } catch (error) {
@@ -115,7 +117,7 @@ function Authors() {
   }
 
   useEffect(() => {
-    fetch("https://library-project-6agw.onrender.com/get_authors")
+    fetch(`https://library-1dmu.onrender.com/get_authors`)
       .then((res) => res.json())
       .then((data) => {
         setAuthors(data);
@@ -257,7 +259,11 @@ function Authors() {
 
       <ul className="mx-auto grid grid-cols-6 space-y-2">
         {Authors.map((author) => (
-          <li key={author._id} className="rounded-lg p-4 shadow-md">
+          <li
+            key={author._id}
+            className="rounded-lg p-4 shadow-md"
+            onClick={() => navigate(`/author/${author._id}`)}
+          >
             <img
               src={author.img}
               alt={author.full_name}
@@ -266,8 +272,8 @@ function Authors() {
             <h3 className="font-dancing text-center text-[20px] font-normal uppercase">
               {author.full_name}
             </h3>
-            <p className="text-center text-[12px] font-light capitalize text-gray-600">
-              {new Date(author.dateOfBirth).getFullYear()} -{" "}
+            <p className="text-center flex text-[12px] font-light capitalize text-gray-600">
+              {new Date(author.dateOfBirth).getFullYear()} - {" "}
               {new Date(author.dateOfDeath).getFullYear()}
             </p>
           </li>

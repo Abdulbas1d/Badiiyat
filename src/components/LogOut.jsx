@@ -8,7 +8,7 @@ export default function Logout() {
     const logout = async () => {
       try {
         // 1. Logout APIga so'rov yuborish
-        await fetch("https://library-project-6agw.onrender.com/logout", {
+        await fetch(`https://library-1dmu.onrender.com/logout`, {
           method: "POST",
           credentials: "include",
         });

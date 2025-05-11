@@ -17,10 +17,12 @@ import {
 import { Plus } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function BooksList() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     image: null,
     title: "",
@@ -113,7 +115,7 @@ function BooksList() {
     newBook.append("description", formData.description);
 
     try {
-      await axios.post(`https://library-project-6agw.onrender.com/add_book`, newBook, {
+      await axios.post(`https://library-1dmu.onrender.com/add_book`, newBook, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -132,7 +134,7 @@ function BooksList() {
         description: ""
       })
 
-      fetch(`https://library-project-6agw.onrender.com/get_books`)
+      fetch(`https://library-1dmu.onrender.com/get_books`)
         .then((res) => res.json())
         .then((data) => setBooks(data))
     } catch (error) {
@@ -142,14 +144,14 @@ function BooksList() {
   }
 
   useEffect(() => {
-    fetch("https://library-project-6agw.onrender.com/get_books")
+    fetch(`https://library-1dmu.onrender.com/get_books`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("API xatosi:", error);
+        console.log("API xatosi:", error);
         setLoading(false);
       });
   }, []);
@@ -310,7 +312,11 @@ function BooksList() {
 
       <ul className="mx-auto grid grid-cols-6 space-y-2">
         {books.map((book) => (
-          <li key={book._id} className="rounded-lg p-4 shadow-md">
+          <li
+            key={book._id}
+            className="rounded-lg p-4 shadow-md"
+            onClick={() => navigate(`/book/${book._id}`)}
+          >
             <img
               src={book.img}
               alt={book.title}
